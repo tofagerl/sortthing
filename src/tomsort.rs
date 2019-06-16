@@ -13,16 +13,27 @@ pub fn sort<T: PartialOrd>(list: &mut Vec<T>) {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::fs;
+
     #[test]
     fn simple_sort_test() {
-        let mut testData = vec!(5, 4, 2, 3, 1);
-        let correctResult = vec!(1, 2, 3, 4, 5);
-        let incorrectResult = vec!(2, 2, 2, 2, 2);
-        sort(&mut testData);
-        assert_eq!(vec_compare(&correctResult, &testData), true);
-        assert_eq!(vec_compare(&incorrectResult, &testData), false);
+        let mut test_data = vec!(5, 4, 2, 3, 1);
+        let correct_result = vec!(1, 2, 3, 4, 5);
+        let incorrect_result = vec!(2, 2, 2, 2, 2);
+        sort(&mut test_data);
+        assert_eq!(vec_compare(&correct_result, &test_data), true);
+        assert_eq!(vec_compare(&incorrect_result, &test_data), false);
     }
-    fn vec_compare(va: &Vec<PartialOrd>, vb: &Vec<PartialOrd>) -> bool {
+
+    #[test]
+    fn word_sort_test() {
+        let mut file_contents = fs::read_to_string("test_strings.json").expect("No such file 'testdata.json'");
+        let mut list: Vec<String> = serde_json::from_str(&file_contents).expect("Could not deserialize contents");
+        sort(&mut list)
+    }
+
+    fn vec_compare<T>(va: &Vec<T>, vb: &Vec<T>) -> bool
+        where T: std::cmp::PartialOrd{
         (va.len() == vb.len()) &&
             va.iter()
                 .zip(vb)
